@@ -586,11 +586,11 @@ export class ObsidianRest implements INodeType {
                         responseData = await this.helpers.httpRequest({
                             method: 'POST',
                             url: `${baseUrl}/search/simple/`,
-                            headers: {
-                                ...authHeaders,
-                                'Content-Type': 'text/plain',
+                            qs: {
+                                query: query,
+                                contextLength: 100,
                             },
-                            body: query,
+                            headers: { ...authHeaders },
                             skipSslCertificateValidation: ignoreSsl,
                         });
                     }

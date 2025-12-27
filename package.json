@@ -1,6 +1,6 @@
 {
     "name": "n8n-nodes-obsidian-rest",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "n8n community node for Obsidian Local REST API - A complete integration for managing Obsidian vault via REST API",
     "keywords": [
         "n8n-community-node-package",
