@@ -54,6 +54,9 @@ export class ObsidianApi implements ICredentialType {
             baseURL: '={{$credentials.baseUrl}}',
             url: '/',
             skipSslCertificateValidation: '={{$credentials.ignoreSslIssues}}',
+            headers: {
+                Authorization: '={{"Bearer " + $credentials.apiKey}}',
+            },
         },
     };
 }
