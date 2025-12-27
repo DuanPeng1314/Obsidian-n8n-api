@@ -429,7 +429,13 @@ export class ObsidianRest implements INodeType {
 
         const credentials = await this.getCredentials('obsidianApi');
         const baseUrl = (credentials.baseUrl as string).replace(/\/$/, '');
+        const apiKey = credentials.apiKey as string;
         const ignoreSsl = credentials.ignoreSslIssues as boolean;
+
+        // 构建认证头 - 这是关键！所有请求都需要这个头
+        const authHeaders = {
+            Authorization: `Bearer ${apiKey}`,
+        };
 
         for (let i = 0; i < items.length; i++) {
             try {
@@ -444,6 +450,7 @@ export class ObsidianRest implements INodeType {
                         responseData = await this.helpers.httpRequest({
                             method: 'GET',
                             url: `${baseUrl}${path}`,
+                            headers: { ...authHeaders },
                             skipSslCertificateValidation: ignoreSsl,
                         });
                     }
@@ -452,7 +459,7 @@ export class ObsidianRest implements INodeType {
                         const filePath = this.getNodeParameter('filePath', i) as string;
                         const returnJson = this.getNodeParameter('returnJson', i) as boolean;
 
-                        const headers: any = {};
+                        const headers: any = { ...authHeaders };
                         if (returnJson) {
                             headers['Accept'] = 'application/vnd.olrapi.note+json';
                         }
@@ -478,6 +485,7 @@ export class ObsidianRest implements INodeType {
                             method: 'PUT',
                             url: `${baseUrl}/vault/${filePath}`,
                             headers: {
+                                ...authHeaders,
                                 'Content-Type': 'text/markdown',
                             },
                             body: content,
@@ -494,6 +502,7 @@ export class ObsidianRest implements INodeType {
                             method: 'POST',
                             url: `${baseUrl}/vault/${filePath}`,
                             headers: {
+                                ...authHeaders,
                                 'Content-Type': 'text/markdown',
                             },
                             body: content,
@@ -508,6 +517,7 @@ export class ObsidianRest implements INodeType {
                         await this.helpers.httpRequest({
                             method: 'DELETE',
                             url: `${baseUrl}/vault/${filePath}`,
+                            headers: { ...authHeaders },
                             skipSslCertificateValidation: ignoreSsl,
                         });
                         responseData = { success: true, deleted: filePath };
@@ -521,6 +531,7 @@ export class ObsidianRest implements INodeType {
                             method: 'GET',
                             url: `${baseUrl}/active/`,
                             headers: {
+                                ...authHeaders,
                                 'Accept': 'application/vnd.olrapi.note+json',
                             },
                             skipSslCertificateValidation: ignoreSsl,
@@ -533,6 +544,7 @@ export class ObsidianRest implements INodeType {
                             method: 'PUT',
                             url: `${baseUrl}/active/`,
                             headers: {
+                                ...authHeaders,
                                 'Content-Type': 'text/markdown',
                             },
                             body: content,
@@ -547,6 +559,7 @@ export class ObsidianRest implements INodeType {
                             method: 'POST',
                             url: `${baseUrl}/active/`,
                             headers: {
+                                ...authHeaders,
                                 'Content-Type': 'text/markdown',
                             },
                             body: content,
@@ -559,6 +572,7 @@ export class ObsidianRest implements INodeType {
                         await this.helpers.httpRequest({
                             method: 'DELETE',
                             url: `${baseUrl}/active/`,
+                            headers: { ...authHeaders },
                             skipSslCertificateValidation: ignoreSsl,
                         });
                         responseData = { success: true };
@@ -573,6 +587,7 @@ export class ObsidianRest implements INodeType {
                             method: 'POST',
                             url: `${baseUrl}/search/simple/`,
                             headers: {
+                                ...authHeaders,
                                 'Content-Type': 'text/plain',
                             },
                             body: query,
@@ -586,6 +601,7 @@ export class ObsidianRest implements INodeType {
                             method: 'POST',
                             url: `${baseUrl}/search/`,
                             headers: {
+                                ...authHeaders,
                                 'Content-Type': 'application/vnd.olrapi.dataview.dql+txt',
                             },
                             body: query,
@@ -600,6 +616,7 @@ export class ObsidianRest implements INodeType {
                         responseData = await this.helpers.httpRequest({
                             method: 'GET',
                             url: `${baseUrl}/commands/`,
+                            headers: { ...authHeaders },
                             skipSslCertificateValidation: ignoreSsl,
                         });
                     }
@@ -609,6 +626,7 @@ export class ObsidianRest implements INodeType {
                         await this.helpers.httpRequest({
                             method: 'POST',
                             url: `${baseUrl}/commands/${commandId}/`,
+                            headers: { ...authHeaders },
                             skipSslCertificateValidation: ignoreSsl,
                         });
                         responseData = { success: true, command: commandId };
@@ -624,6 +642,7 @@ export class ObsidianRest implements INodeType {
                             method: 'GET',
                             url: `${baseUrl}/periodic/${period}/`,
                             headers: {
+                                ...authHeaders,
                                 'Accept': 'application/vnd.olrapi.note+json',
                             },
                             skipSslCertificateValidation: ignoreSsl,
@@ -636,6 +655,7 @@ export class ObsidianRest implements INodeType {
                             method: 'PUT',
                             url: `${baseUrl}/periodic/${period}/`,
                             headers: {
+                                ...authHeaders,
                                 'Content-Type': 'text/markdown',
                             },
                             body: content,
@@ -650,6 +670,7 @@ export class ObsidianRest implements INodeType {
                             method: 'POST',
                             url: `${baseUrl}/periodic/${period}/`,
                             headers: {
+                                ...authHeaders,
                                 'Content-Type': 'text/markdown',
                             },
                             body: content,
@@ -665,6 +686,7 @@ export class ObsidianRest implements INodeType {
                         responseData = await this.helpers.httpRequest({
                             method: 'GET',
                             url: `${baseUrl}/`,
+                            headers: { ...authHeaders },
                             skipSslCertificateValidation: ignoreSsl,
                         });
                     }
